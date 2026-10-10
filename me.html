@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rithesh K R — Software Developer">
+  <title>Rithesh K R - Software Developer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --paper: #f6f2ea;
+      --paper-deep: #e9e2d6;
+      --ink: #18222f;
+      --muted: #52606e;
+      --blue: #315ce8;
+      --orange: #df6645;
+      --line: rgba(24, 34, 47, .16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--paper);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Manrope", system-ui, sans-serif;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    ::selection {
+      background: var(--blue);
+      color: var(--paper);
+    }
+
+    .mono {
+      font-family: "DM Mono", ui-monospace, monospace;
+    }
+
+    .site-nav {
+      backdrop-filter: blur(14px);
+      background: rgba(246, 242, 234, .78);
+      border-bottom: 1px solid rgba(24, 34, 47, .08);
+    }
+
+    .nav-button {
+      border: 1px solid transparent;
+      transition: color .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .nav-button:hover,
+    .nav-button:focus-visible,
+    .nav-button.active {
+      color: var(--blue);
+      background: rgba(49, 92, 232, .07);
+      border-color: rgba(49, 92, 232, .3);
+      outline: none;
+    }
+
+    .hero {
+      min-height: 220svh;
+    }
+
+    .hero-stage {
+      min-height: 100svh;
+    }
+
+    .hero-grid {
+      background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 6rem 6rem;
+      background-position: -1px -1px;
+    }
+
+    .hero-grid::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, var(--paper), transparent 23%, transparent 77%, var(--paper)), linear-gradient(0deg, var(--paper), transparent 18%, transparent 80%, var(--paper));
+    }
+
+    .layer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .name-line {
+      display: block;
+      white-space: nowrap;
+      line-height: .86;
+      overflow: visible;
+    }
+
+    .letter-shell {
+      display: inline-block;
+      vertical-align: top;
+      overflow: visible;
+    }
+
+    .name-letter {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    .name-space {
+      width: .28em;
+    }
+
+    .profile-card {
+      position: relative;
+      min-height: 21rem;
+      overflow: hidden;
+      background: var(--ink);
+      color: var(--paper);
+      box-shadow: 1rem 1rem 0 var(--paper-deep);
+    }
+
+    .profile-card::before {
+      content: "";
+      position: absolute;
+      inset: 1.1rem;
+      border: 1px solid rgba(246, 242, 234, .2);
+      pointer-events: none;
+    }
+
+    .profile-copy,
+    .stat-grid {
+      position: absolute;
+      inset: 1.15rem;
+      z-index: 1;
+    }
+
+    .profile-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card-rail {
+      height: 2px;
+      background: var(--orange);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .5rem;
+      align-content: center;
+    }
+
+    .stat-mini {
+      border: 1px solid rgba(246, 242, 234, .2);
+      padding: .8rem;
+    }
+
+    .stat-mini:nth-child(2) {
+      border-color: rgba(223, 102, 69, .72);
+    }
+
+    .stat-mini:nth-child(3) {
+      border-color: rgba(107, 157, 250, .55);
+    }
+
+    .stat-mini:nth-child(4) {
+      border-color: rgba(246, 242, 234, .38);
+    }
+
+    .hero-progress {
+      background: rgba(24, 34, 47, .14);
+      overflow: hidden;
+    }
+
+    .hero-progress-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--blue);
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+
+    .scroll-cue {
+      transition: color .2s ease;
+    }
+
+    .scroll-pill {
+      width: 14px;
+      height: 22px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      display: inline-flex;
+      justify-content: center;
+      padding-top: 3px;
+    }
+
+    .scroll-pill-dot {
+      width: 2.5px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--blue);
+      animation: scroll-bob 1.8s ease-in-out infinite;
+    }
+
+    @keyframes scroll-bob {
+      0%,
+      100% {
+        transform: translateY(0);
+        opacity: .85;
+      }
+
+      50% {
+        transform: translateY(7px);
+        opacity: .25;
+      }
+    }
+
+    .slide {
+      min-height: 100svh;
+      animation: slide-in .55s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .slide-grid {
+      background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 6rem 6rem;
+      background-position: -1px -1px;
+    }
+
+    .slide-grid::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(90deg, var(--paper), transparent 22%, transparent 78%, var(--paper));
+    }
+
+    .slide.bg-\[\#18222f\] .slide-grid::after {
+      background: none;
+    }
+
+    .slide-layer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-kicker::before {
+      content: "";
+      display: inline-block;
+      width: 2rem;
+      height: 1px;
+      margin: 0 .7rem .22rem 0;
+      background: currentColor;
+    }
+
+    .work-rail {
+      scrollbar-width: thin;
+      scrollbar-color: var(--blue) transparent;
+    }
+
+    .work-card {
+      min-width: min(76vw, 31rem);
+      background: #fffdf9;
+      border: 1px solid var(--line);
+      transition: transform .28s ease, box-shadow .28s ease;
+    }
+
+    .work-card:hover {
+      transform: translateY(-.4rem);
+      box-shadow: .65rem .65rem 0 rgba(49, 92, 232, .15);
+    }
+
+    .work-card:nth-child(2) {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink);
+    }
+
+    .work-card:nth-child(3) {
+      background: #e7edf9;
+    }
+
+    .slide-arrow {
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .slide-arrow:hover,
+    .slide-arrow:focus-visible {
+      transform: translateX(.25rem);
+      background: var(--blue);
+      outline: none;
+    }
+
+    .slide-arrow.light {
+      border-color: var(--paper);
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .slide-arrow.light:hover,
+    .slide-arrow.light:focus-visible {
+      background: #dbe5ff;
+    }
+
+    .slide-back {
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .slide-back:hover,
+    .slide-back:focus-visible {
+      transform: translateX(-.25rem);
+      background: var(--blue);
+      outline: none;
+    }
+
+    .slide-back.light {
+      border-color: var(--paper);
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .slide-back.light:hover,
+    .slide-back.light:focus-visible {
+      background: #dbe5ff;
+    }
+
+    .math-card {
+      position: relative;
+      width: 100%;
+      max-width: 28.5rem;
+      aspect-ratio: 1;
+      background: rgba(255, 253, 249, .82);
+      border: 1px solid var(--line);
+      box-shadow: .75rem .75rem 0 var(--paper-deep);
+      backdrop-filter: blur(8px);
+    }
+
+    .math-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: crosshair;
+    }
+
+    .math-telemetry {
+      pointer-events: none;
+    }
+
+    .contact-link {
+      text-decoration: underline;
+      text-decoration-color: var(--orange);
+      text-decoration-thickness: .18em;
+      text-underline-offset: .22em;
+    }
+
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateX(2rem);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @media(max-width:700px) {
+      .hero {
+        min-height: 205svh;
+      }
+
+      .hero-grid,
+      .slide-grid {
+        background-size: 4rem 4rem;
+      }
+
+      .hero-grid>.layer:nth-child(2) {
+        align-items: start;
+        gap: .9rem;
+        padding-block: 1rem;
+      }
+
+      .hero-summary {
+        margin-top: 1rem;
+      }
+
+      .profile-card {
+        position: absolute;
+        top: 18rem;
+        left: 0;
+        width: 100%;
+        justify-self: stretch;
+        min-height: 12.5rem;
+        box-shadow: .55rem .55rem 0 var(--paper-deep);
+      }
+
+      .profile-copy,
+      .stat-grid {
+        inset: .75rem;
+      }
+
+      .profile-copy>p:nth-child(2) {
+        font-size: 1.55rem;
+      }
+
+      .profile-copy>div {
+        margin-top: 1rem !important;
+      }
+
+      .stat-grid {
+        gap: .35rem;
+      }
+
+      .stat-mini {
+        padding: .65rem;
+      }
+
+      .stat-mini .mt-3 {
+        margin-top: .35rem;
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script>
+    const { createElement: h, useEffect, useState, useRef } = React;
+    const stats = [
+      { value: 1730, suffix: "+", label: "entities", detail: "portal scale" },
+      { value: 115, suffix: "+", label: "staff users", detail: "9 programmes" },
+      { value: 67, suffix: "", label: "unit tests", detail: "Stride logic" },
+      { value: 83, suffix: "%", label: "NPTEL score", detail: "ML maths" },
+    ];
+    const projects = [
+      { id: "01", name: "ThinkStack", label: "OFFLINE AI RESEARCH WORKSPACE", description: "A Tauri-supervised FastAPI desktop environment with OS-level process cleanup, self-healing LaTeX compilation, and cross-platform releases.", stack: "Python · Tauri · FastAPI · GitHub Actions" },
+      { id: "02", name: "Stride", label: "OFFLINE-FIRST PRODUCTIVITY ENGINE", description: "A cross-platform productivity application built around cascading state, local storage, backward-compatible migrations, and a 67-unit test suite.", stack: "Python · Flet · Pytest" },
+      { id: "03", name: "C CLI Utilities", label: "SYSTEMS PROGRAMMING TOOLKIT", description: "Modular C command-line utilities for dynamic buffers, parsing, number conversion, tokenization, and generating styled HTML files.", stack: "C · GCC · Make · stdio/stdlib/string" },
+    ];
+    const slides = ["HOME", "ABOUT", "WORK", "CONTACT"];
+
+    function Name({ text }) {
+      return h("span", { className: "name-line", "aria-label": text }, [...text].map((letter, index) =>
+        h("span", { className: letter === " " ? "letter-shell name-space" : "letter-shell", key: index, "aria-hidden": "true" },
+          h("span", { className: "name-letter" }, letter)
+        )
+      ));
+    }
+    function Counter({ stat }) {
+      return h("article", { className: "stat-mini" }, [
+        h("p", { className: "mono text-[8px] uppercase tracking-[.11em] text-slate-400", key: "detail" }, stat.detail),
+        h("p", { className: "mt-3 text-2xl font-extrabold tracking-[-.08em] md:text-3xl", key: "number", "data-count": stat.value, "data-suffix": stat.suffix }, stat.value.toLocaleString() + stat.suffix),
+        h("p", { className: "mt-1 text-[10px] text-slate-300", key: "label" }, stat.label)
+      ]);
+    }
+    function ProfileCard() {
+      return h("aside", { className: "profile-card justify-self-end lg:w-full", "aria-label": "Résumé impact statistics" }, [
+        h("div", { className: "profile-copy", key: "copy" }, [
+          h("p", { className: "mono text-[10px] tracking-[.16em] text-[#f3a38d]" }, "PROFILE / 2026"),
+          h("p", { className: "max-w-sm text-3xl font-bold leading-tight tracking-[-.07em] md:text-5xl" }, "Calm systems. Clear thinking."),
+          h("div", null, [h("div", { className: "card-rail" }), h("div", { className: "mt-4 flex justify-between mono text-[9px] tracking-[.13em] text-slate-400" }, [h("span", null, "BSc CS + STATS"), h("span", null, "CHRIST")])])
+        ]),
+        h("div", { className: "stat-grid", key: "stats" }, stats.map(stat => h(Counter, { stat, key: stat.label })))
+      ]);
+    }
+    function Home({ next }) {
+      useEffect(() => {
+        gsap.registerPlugin(ScrollTrigger);
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const letters = gsap.utils.toArray(".name-letter");
+        const statGrid = document.querySelector(".stat-grid");
+        const profileCopy = document.querySelector(".profile-copy");
+        const statCounts = gsap.utils.toArray("[data-count]");
+        const resetCounts = () => statCounts.forEach(el => { el.textContent = "0" + (el.dataset.suffix || ""); });
+        const countUp = () => statCounts.forEach(el => {
+          const value = { number: 0 };
+          gsap.to(value, { number: Number(el.dataset.count), duration: 1, ease: "power2.out", onUpdate: () => { el.textContent = Math.round(value.number).toLocaleString() + (el.dataset.suffix || ""); } });
+        });
+        if (reduced) {
+          gsap.set(letters, { yPercent: 0, opacity: 1 });
+          gsap.set(statGrid, { opacity: 1, y: 0 });
+          gsap.set(profileCopy, { opacity: 0, display: "none" });
+          gsap.set(".scroll-cue", { opacity: 0, display: "none" });
+          return;
+        }
+        gsap.set(letters, { yPercent: 108, opacity: 0 });
+        gsap.set(statGrid, { y: 36, opacity: 0 });
+        let counted = false;
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".hero", start: "top top", end: "bottom bottom", scrub: .8, invalidateOnRefresh: true,
+            onUpdate: self => {
+              if (self.progress > .67 && !counted) { counted = true; resetCounts(); countUp(); }
+              if (self.progress < .48 && counted) { counted = false; resetCounts(); }
+            }
+          }
+        });
+        timeline
+          .to(".scroll-cue", { opacity: 0, y: 8, ease: "none" }, 0)
+          .to(letters, { yPercent: 0, opacity: 1, stagger: .06, ease: "none" }, 0)
+          .to(".hero-summary", { y: 0, opacity: 1, ease: "none" }, .32)
+          .to(profileCopy, { y: -28, opacity: 0, ease: "none" }, .5)
+          .to(statGrid, { y: 0, opacity: 1, ease: "none" }, .5)
+          .to(".hero-progress-fill", { scaleX: 1, ease: "none" }, 0);
+        return () => { timeline.scrollTrigger.kill(); timeline.kill(); };
+      }, []);
+      return h("section", { className: "hero relative", id: "home", "aria-labelledby": "hero-name" },
+        h("div", { className: "hero-stage sticky top-0 flex items-stretch overflow-hidden px-5 pb-7 pt-20 md:px-10 md:pb-10 md:pt-24" },
+          h("div", { className: "hero-grid relative mx-auto grid w-full max-w-[1500px] grid-rows-[auto_1fr_auto] overflow-hidden border-x border-[color:var(--line)] px-5 py-7 md:px-10 md:py-10" }, [
+            h("div", { className: "layer flex items-center justify-between", key: "top" }, [
+              h("p", { className: "mono text-[9px] tracking-[.15em] text-slate-500" }, "SOFTWARE DEVELOPER · BENGALURU")
+            ]),
+            h("div", { className: "layer grid items-center gap-10 py-8 lg:grid-cols-[1.2fr_.8fr] lg:gap-20", key: "center" }, [
+              h("div", { key: "name" }, [
+                h("p", { className: "mono mb-5 text-[10px] tracking-[.17em] text-[#315ce8]" }, "WELCOME TO MY CORNER OF THE WEB"),
+                h("h1", { id: "hero-name", className: "text-[clamp(4.3rem,12.5vw,13.5rem)] font-extrabold tracking-[-.075em] overflow-visible pr-6" }, [
+                  h(Name, { text: "RITHESH", key: "first" }),
+                  h("span", { className: "text-[#315ce8]" }, h(Name, { text: "K R" }))
+                ]),
+                h("p", { className: "hero-summary mt-8 max-w-xl text-sm leading-7 text-slate-600 md:mt-10 md:text-base" }, "I build dependable software for complicated real-world systems, especially where offline operation, clean architecture, and careful problem solving matter.")
+              ]),
+              h(ProfileCard, { key: "card" })
+            ]),
+            h("div", { className: "layer flex items-end justify-between gap-4", key: "bottom" }, [
+              h("button", {
+                onClick: () => window.scrollBy({ top: window.innerHeight * 0.85, behavior: "smooth" }),
+                className: "scroll-cue mono flex items-center gap-3 border-0 bg-transparent p-0 text-[9px] tracking-[.18em] text-slate-400 transition-colors hover:text-[color:var(--blue)] cursor-pointer select-none",
+                "aria-label": "Scroll to explore"
+              }, [
+                h("span", { className: "scroll-pill", "aria-hidden": "true" },
+                  h("span", { className: "scroll-pill-dot" })
+                ),
+                h("span", null, "SCROLL")
+              ]),
+              h("div", { className: "flex items-center gap-5" }, [
+                h("div", { className: "hero-progress h-[2px] w-16 md:w-32", "aria-hidden": "true" }, h("div", { className: "hero-progress-fill" })),
+                h("button", { onClick: next, className: "slide-arrow mono flex items-center gap-3 px-4 py-3 text-[10px] tracking-[.13em]", "aria-label": "Open About section" }, ["ABOUT", h("span", { className: "text-lg", key: "arrow" }, "→")])
+              ])
+            ])
+          ])
+        )
+      );
+    }
+    function Project({ project }) {
+      return h("article", { className: "work-card snap-start p-7 md:p-9" }, [
+        h("div", { className: "flex items-start justify-between gap-6", key: "top" }, [h("p", { className: "mono text-[10px] tracking-[.15em] opacity-60" }, project.label), h("span", { className: "mono text-xs text-[#315ce8]" }, project.id)]),
+        h("h3", { className: "mt-16 text-4xl font-extrabold tracking-[-.075em] md:text-5xl", key: "name" }, project.name),
+        h("p", { className: "mt-5 text-sm leading-7 opacity-70", key: "description" }, project.description),
+        h("p", { className: "mono mt-10 border-t border-current/15 pt-4 text-[10px] leading-5 opacity-60", key: "stack" }, project.stack)
+      ]);
+    }
+    function Arrow({ label, next, light }) {
+      return h("button", { onClick: next, className: "slide-arrow " + (light ? "light " : "") + "mono flex items-center gap-3 px-5 py-4 text-[10px] tracking-[.14em]", "aria-label": "Open " + label + " section" }, [label, h("span", { className: "text-lg", key: "arrow" }, "→")]);
+    }
+    function BackArrow({ label, onClick, light }) {
+      return h("button", { onClick: onClick, className: "slide-back " + (light ? "light " : "") + "mono flex items-center gap-3 px-5 py-4 text-[10px] tracking-[.14em]", "aria-label": "Back to " + label + " section" }, [h("span", { className: "text-lg", key: "arrow" }, "←"), label]);
+    }
+    function MathArtifact() {
+      const canvasRef = useRef(null);
+      const [telemetry, setTelemetry] = useState({ theta: "0.0°", zDepth: "+0.00" });
+
+      useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        let animId;
+        let t = 0;
+        let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const updateSize = () => {
+          const rect = canvas.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          canvas.width = rect.width * dpr;
+          canvas.height = rect.height * dpr;
+        };
+        updateSize();
+        window.addEventListener("resize", updateSize);
+
+        const onMouseMove = e => {
+          const rect = canvas.getBoundingClientRect();
+          if (!rect.width) return;
+          mouse.targetX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+          mouse.targetY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+        };
+        const onMouseLeave = () => {
+          mouse.targetX = 0;
+          mouse.targetY = 0;
+        };
+        canvas.addEventListener("mousemove", onMouseMove);
+        canvas.addEventListener("mouseleave", onMouseLeave);
+
+        const phi = (1 + Math.sqrt(5)) / 2;
+        const s = 1 / Math.sqrt(1 + phi * phi);
+        const c = phi * s;
+        const icoVertices = [
+          [-s, c, 0], [s, c, 0], [-s, -c, 0], [s, -c, 0],
+          [0, -s, c], [0, s, c], [0, -s, -c], [0, s, -c],
+          [c, 0, -s], [c, 0, s], [-c, 0, -s], [-c, 0, s]
+        ];
+        const icoEdges = [
+          [0, 1], [0, 5], [0, 7], [0, 10], [0, 11],
+          [1, 5], [1, 7], [1, 8], [1, 9],
+          [2, 3], [2, 4], [2, 6], [2, 10], [2, 11],
+          [3, 4], [3, 6], [3, 8], [3, 9],
+          [4, 5], [4, 9], [4, 11],
+          [5, 9], [5, 11],
+          [6, 7], [6, 8], [6, 10],
+          [7, 8], [7, 10],
+          [8, 9],
+          [10, 11]
+        ];
+
+        let lastTime = performance.now();
+        let frameCount = 0;
+
+        const render = now => {
+          const dt = Math.min((now - lastTime) / 1000, 0.1);
+          lastTime = now;
+          if (!reduced) {
+            t += dt;
+            mouse.x += (mouse.targetX - mouse.x) * 0.08;
+            mouse.y += (mouse.targetY - mouse.y) * 0.08;
+          }
+
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const w = canvas.width;
+          const h = canvas.height;
+          if (!w || !h) {
+            animId = requestAnimationFrame(render);
+            return;
+          }
+          const cx = w / 2;
+          const cy = h / 2;
+          const radius = Math.min(w, h) * 0.36;
+
+          ctx.clearRect(0, 0, w, h);
+
+          const yaw = t * 0.38 + mouse.x * 0.75;
+          const pitch = t * 0.24 + mouse.y * 0.65;
+          const roll = t * 0.12;
+
+          const cosY = Math.cos(yaw), sinY = Math.sin(yaw);
+          const cosP = Math.cos(pitch), sinP = Math.sin(pitch);
+          const cosR = Math.cos(roll), sinR = Math.sin(roll);
+
+          const project = (x, y, z) => {
+            const x1 = x * cosY - z * sinY;
+            const z1 = x * sinY + z * cosY;
+            const y2 = y * cosP - z1 * sinP;
+            const z2 = y * sinP + z1 * cosP;
+            const x3 = x1 * cosR - y2 * sinR;
+            const y3 = x1 * sinR + y2 * cosR;
+            const fov = 3.2;
+            const persp = fov / (fov + z2);
+            return {
+              x: cx + x3 * radius * persp,
+              y: cy + y3 * radius * persp,
+              z: z2,
+              persp
+            };
+          };
+
+          const dialR = radius * 1.16;
+          ctx.save();
+          ctx.strokeStyle = "rgba(24, 34, 47, 0.12)";
+          ctx.lineWidth = 1 * dpr;
+          ctx.beginPath();
+          ctx.arc(cx, cy, dialR, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.setLineDash([3 * dpr, 5 * dpr]);
+          ctx.arc(cx, cy, radius * 0.84, 0, Math.PI * 2);
+          ctx.strokeStyle = "rgba(49, 92, 232, 0.16)";
+          ctx.stroke();
+          ctx.setLineDash([]);
+
+          const totalTicks = 36;
+          for (let i = 0; i < totalTicks; i++) {
+            const ang = (i * Math.PI * 2) / totalTicks;
+            const isMajor = i % 9 === 0;
+            const isMed = i % 3 === 0;
+            const tickLen = (isMajor ? 8 : isMed ? 5 : 3) * dpr;
+            ctx.beginPath();
+            ctx.moveTo(cx + Math.cos(ang) * dialR, cy + Math.sin(ang) * dialR);
+            ctx.lineTo(cx + Math.cos(ang) * (dialR - tickLen), cy + Math.sin(ang) * (dialR - tickLen));
+            ctx.strokeStyle = isMajor ? "#315ce8" : isMed ? "rgba(24, 34, 47, 0.35)" : "rgba(24, 34, 47, 0.14)";
+            ctx.lineWidth = (isMajor ? 1.4 : 1) * dpr;
+            ctx.stroke();
+          }
+
+          ctx.strokeStyle = "rgba(24, 34, 47, 0.12)";
+          ctx.lineWidth = 1 * dpr;
+          ctx.beginPath();
+          ctx.moveTo(cx - 14 * dpr, cy); ctx.lineTo(cx + 14 * dpr, cy);
+          ctx.moveTo(cx, cy - 14 * dpr); ctx.lineTo(cx, cy + 14 * dpr);
+          ctx.stroke();
+          ctx.restore();
+
+          ctx.save();
+          ctx.beginPath();
+          const ringSteps = 48;
+          for (let i = 0; i <= ringSteps; i++) {
+            const a = (i * Math.PI * 2) / ringSteps;
+            const p = project(Math.cos(a) * 1.06, 0, Math.sin(a) * 1.06);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.strokeStyle = "rgba(49, 92, 232, 0.2)";
+          ctx.setLineDash([4 * dpr, 4 * dpr]);
+          ctx.lineWidth = 1 * dpr;
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.restore();
+
+          const projVerts = icoVertices.map(v => project(v[0], v[1], v[2]));
+          const edgeData = icoEdges.map(([i, j]) => {
+            const p1 = projVerts[i];
+            const p2 = projVerts[j];
+            return { p1, p2, avgZ: (p1.z + p2.z) / 2 };
+          }).sort((a, b) => a.avgZ - b.avgZ);
+
+          edgeData.forEach(({ p1, p2, avgZ }) => {
+            const depthNorm = Math.max(0, Math.min(1, (avgZ + 1) / 2));
+            const alpha = 0.1 + depthNorm * 0.45;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = depthNorm > 0.48 ? "rgba(49, 92, 232, " + alpha + ")" : "rgba(24, 34, 47, " + (alpha * 0.75) + ")";
+            ctx.lineWidth = (depthNorm > 0.5 ? 1.3 : 0.85) * dpr;
+            ctx.stroke();
+          });
+
+          projVerts.forEach((p, idx) => {
+            const depthNorm = Math.max(0.15, (p.z + 1) / 2);
+            const ptRadius = (p.z > 0 ? 3 : 2) * dpr * p.persp;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, ptRadius, 0, Math.PI * 2);
+            ctx.fillStyle = idx % 2 === 0 ? "rgba(49, 92, 232, " + depthNorm + ")" : "rgba(223, 102, 69, " + depthNorm + ")";
+            ctx.fill();
+          });
+
+          const knotSamples = 160;
+          const knotPts = [];
+          for (let k = 0; k <= knotSamples; k++) {
+            const u = (k * Math.PI * 2) / knotSamples;
+            const kx = 0.72 * Math.sin(3 * u + t * 0.7) * Math.cos(0.5 * u);
+            const ky = 0.72 * Math.cos(4 * u + t * 0.5) * Math.cos(0.5 * u);
+            const kz = 0.65 * Math.sin(5 * u + t * 0.4);
+            knotPts.push(project(kx, ky, kz));
+          }
+
+          ctx.save();
+          for (let k = 0; k < knotPts.length - 1; k++) {
+            const p1 = knotPts[k];
+            const p2 = knotPts[k + 1];
+            const depthNorm = Math.max(0.12, Math.min(1, (p1.z + 1) / 2));
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            const tColor = k / knotSamples;
+            ctx.strokeStyle = tColor > 0.5
+              ? "rgba(223, 102, 69, " + (depthNorm * 0.75) + ")"
+              : "rgba(49, 92, 232, " + (depthNorm * 0.85) + ")";
+            ctx.lineWidth = (1.4 + depthNorm * 1.1) * dpr;
+            ctx.stroke();
+          }
+
+          const pulseU = (t * 1.6) % (Math.PI * 2);
+          const px = 0.72 * Math.sin(3 * pulseU + t * 0.7) * Math.cos(0.5 * pulseU);
+          const py = 0.72 * Math.cos(4 * pulseU + t * 0.5) * Math.cos(0.5 * pulseU);
+          const pz = 0.65 * Math.sin(5 * pulseU + t * 0.4);
+          const pulsePt = project(px, py, pz);
+
+          const haloR = (7 + Math.sin(t * 8) * 2) * dpr;
+          const grad = ctx.createRadialGradient(pulsePt.x, pulsePt.y, 1 * dpr, pulsePt.x, pulsePt.y, haloR);
+          grad.addColorStop(0, "rgba(223, 102, 69, 0.9)");
+          grad.addColorStop(0.4, "rgba(223, 102, 69, 0.35)");
+          grad.addColorStop(1, "rgba(223, 102, 69, 0)");
+          ctx.beginPath();
+          ctx.arc(pulsePt.x, pulsePt.y, haloR, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(pulsePt.x, pulsePt.y, 3 * dpr, 0, Math.PI * 2);
+          ctx.fillStyle = "#df6645";
+          ctx.fill();
+          ctx.restore();
+
+          frameCount++;
+          if (frameCount % 12 === 0) {
+            const deg = ((yaw * 180 / Math.PI) % 360 + 360) % 360;
+            setTelemetry({
+              theta: deg.toFixed(1) + "°",
+              zDepth: (pulsePt.z >= 0 ? "+" : "") + pulsePt.z.toFixed(2)
+            });
+          }
+
+          animId = requestAnimationFrame(render);
+        };
+
+        animId = requestAnimationFrame(render);
+
+        return () => {
+          cancelAnimationFrame(animId);
+          window.removeEventListener("resize", updateSize);
+          canvas.removeEventListener("mousemove", onMouseMove);
+          canvas.removeEventListener("mouseleave", onMouseLeave);
+        };
+      }, []);
+
+      return h("div", { className: "math-card group relative flex flex-col justify-between overflow-hidden p-4 select-none" }, [
+        h("div", { className: "layer flex items-center justify-between text-[8px] mono tracking-[.14em] text-slate-500", key: "hdr" }, [
+          h("span", { className: "flex items-center gap-1.5" }, [
+            h("span", { className: "inline-block w-1.5 h-1.5 rounded-full bg-[#315ce8] animate-pulse" }),
+            "HARMONIC 3:4:5"
+          ]),
+          h("span", { className: "text-[#315ce8] font-medium" }, "Φ = 1.618")
+        ]),
+        h("canvas", { ref: canvasRef, className: "math-canvas absolute inset-0 z-0", key: "canvas" }),
+        h("div", { className: "math-telemetry layer flex items-end justify-between border-t border-[color:var(--line)]/50 pt-2 text-[8px] mono tracking-[.12em] text-slate-500", key: "ftr" }, [
+          h("div", null, [
+            h("p", { className: "text-slate-400" }, "f(θ) = e^{iωt}·∇Ψ"),
+            h("p", { className: "font-medium text-slate-700 mt-0.5" }, "θ: " + telemetry.theta)
+          ]),
+          h("div", { className: "text-right" }, [
+            h("p", { className: "text-slate-400" }, "DEPTH: " + telemetry.zDepth),
+            h("p", { className: "text-[#df6645] font-semibold mt-0.5" }, "60 FPS")
+          ])
+        ])
+      ]);
+    }
+
+    function DeckSlide({ index, next, goTo }) {
+      const body = index === 1
+        ? h("div", { className: "grid h-full items-center gap-12 lg:grid-cols-[minmax(0,29rem)_1fr] lg:gap-16 xl:gap-24" }, [
+          h("div", { className: "flex flex-col items-start gap-4 w-full max-w-[28.5rem]" }, [
+            h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#315ce8]" }, "ABOUT"),
+            h(MathArtifact, { key: "math-visualizer" })
+          ]),
+          h("div", null, [
+            h("h2", { className: "max-w-4xl text-5xl font-extrabold leading-[.92] tracking-[-.08em] md:text-8xl" }, "Building from constraints, not around them."),
+            h("div", { className: "mt-12 grid max-w-4xl gap-6 text-sm leading-7 text-slate-600 md:grid-cols-2" }, [
+              h("p", null, "I'm a BSc Computer Science & Statistics student at CHRIST (Deemed to be University), Bengaluru. My focus is software development, backend work, systems programming, and computational problem solving. I care deeply about writing code that is readable, testable, and built to last not just code that works today."),
+              h("p", null, "I like software that remains useful without the perfect conditions: an unavailable network, a failed compiler run, an interrupted process, or data that needs to evolve without breaking what came before. My work reflects a preference for careful architecture, minimal dependencies, and systems that degrade gracefully rather than fail silently.")
+            ])
+          ])
+        ])
+        : index === 2
+          ? h("div", { className: "flex flex-col justify-center h-full py-6" }, [
+            h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#315ce8]" }, "SELECTED WORK"),
+            h("p", { className: "mt-3 max-w-md text-sm leading-7 text-slate-600" }, "A selection of projects where I tackled real engineering problems — offline systems, desktop tooling, and low-level utilities."),
+            h("div", { className: "work-rail -mx-5 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 md:-mx-10 md:px-10" }, projects.map(project => h(Project, { project, key: project.id })))
+          ])
+          : h("div", { className: "grid h-full items-center gap-12 text-[#f6f2ea] md:grid-cols-[1fr_auto]" }, [
+            h("div", null, [h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#f3a38d]" }, "LET'S TALK"), h("h2", { className: "mt-5 max-w-4xl text-6xl font-extrabold leading-[.83] tracking-[-.09em] md:text-9xl" }, "Make the hard part work.")]),
+            h("div", { className: "md:text-right" }, [h("a", { href: "mailto:rithesh.kr@bsccsh.christuniversity.in", className: "contact-link mono text-sm" }, "rithesh.kr@bsccsh.christuniversity.in"), h("a", { href: "https://github.com/Rithesh077", target: "_blank", rel: "noopener noreferrer", className: "contact-link mono text-sm block mt-4" }, "github.com/Rithesh077"), h("p", { className: "mono mt-6 text-[10px] tracking-[.1em] text-slate-400" }, "BENGALURU, KARNATAKA · +91 93534 57675")])
+          ]);
+      const contact = index === 3;
+      return h("section", { className: "slide " + (contact ? "bg-[#18222f]" : "bg-[#f6f2ea]"), id: slides[index].toLowerCase(), "aria-label": slides[index] + " section" },
+        h("div", { className: "slide-grid relative flex min-h-[100svh] px-5 pb-8 pt-20 md:px-10 md:pb-10 md:pt-24" },
+          h("div", { className: "slide-layer mx-auto grid w-full max-w-[1500px] grid-rows-[auto_1fr_auto] px-5 py-7 md:px-10 md:py-10" }, [
+            h("div", { key: "top" }),
+            h("div", { className: "min-h-0", key: "body" }, body),
+            h("div", { className: "flex items-center justify-between", key: "bottom" }, [h(BackArrow, { label: slides[index - 1], onClick: function () { goTo(index - 1) }, light: contact }), h(Arrow, { label: index === 3 ? "HOME" : slides[index + 1], next, light: contact })])
+          ])
+        )
+      );
+    }
+    function Nav({ active, goTo }) {
+      return h("header", { className: "site-nav fixed inset-x-0 top-0 z-50" }, h("nav", { className: "mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-3 md:px-10", "aria-label": "Portfolio slides" }, [
+        h("button", { onClick: () => goTo(0), className: "mono shrink-0 border-0 bg-transparent text-xs font-medium tracking-[.13em]" }, "R / KR"),
+        h("div", { className: "flex max-w-[82vw] items-center gap-1 overflow-x-auto" }, slides.map((label, index) => h("button", { onClick: () => goTo(index), className: "nav-button " + (active === index ? "active " : "") + "mono shrink-0 rounded-full px-3 py-2 text-[9px] tracking-[.12em]", key: label }, label)))
+      ]));
+    }
+    function App() {
+      const [active, setActive] = useState(0);
+      const goTo = index => { setActive(index); window.scrollTo(0, 0); };
+      const next = () => goTo(active === slides.length - 1 ? 0 : active + 1);
+      return h("div", null, [h(Nav, { active, goTo, key: "nav" }), active === 0 ? h(Home, { next, key: "home" }) : h(DeckSlide, { index: active, next, goTo, key: active })]);
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(h(App));
+  </script>
+</body>
+
+</html>
