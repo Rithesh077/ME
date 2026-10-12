@@ -268,19 +268,24 @@
     }
 
     .work-rail {
-      scrollbar-width: thin;
-      scrollbar-color: var(--blue) transparent;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
+    }
+
+    .work-rail::-webkit-scrollbar {
+      display: none;
     }
 
     .work-card {
-      min-width: min(76vw, 31rem);
       background: #fffdf9;
       border: 1px solid var(--line);
-      transition: transform .28s ease, box-shadow .28s ease;
+      transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
     }
 
     .work-card:hover {
-      transform: translateY(-.4rem);
+      transform: translateY(-.3rem);
       box-shadow: .65rem .65rem 0 rgba(49, 92, 232, .15);
     }
 
@@ -392,26 +397,31 @@
 
       .hero-grid,
       .slide-grid {
-        background-size: 4rem 4rem;
+        background-size: 3.5rem 3.5rem;
+      }
+
+      .name-line {
+        line-height: .96;
       }
 
       .hero-grid>.layer:nth-child(2) {
         align-items: start;
-        gap: .9rem;
-        padding-block: 1rem;
+        gap: .8rem;
+        padding-block: .25rem;
       }
 
       .hero-summary {
-        margin-top: 1rem;
+        margin-top: .6rem;
       }
 
       .profile-card {
-        position: absolute;
-        top: 18rem;
-        left: 0;
+        position: relative;
+        top: auto;
+        left: auto;
         width: 100%;
         justify-self: stretch;
-        min-height: 12.5rem;
+        min-height: 11rem;
+        margin-top: .5rem;
         box-shadow: .55rem .55rem 0 var(--paper-deep);
       }
 
@@ -421,11 +431,12 @@
       }
 
       .profile-copy>p:nth-child(2) {
-        font-size: 1.55rem;
+        font-size: 1.35rem;
+        line-height: 1.15;
       }
 
       .profile-copy>div {
-        margin-top: 1rem !important;
+        margin-top: .6rem !important;
       }
 
       .stat-grid {
@@ -433,11 +444,12 @@
       }
 
       .stat-mini {
-        padding: .65rem;
+        padding: .5rem .6rem;
       }
 
       .stat-mini .mt-3 {
-        margin-top: .35rem;
+        margin-top: .25rem;
+        font-size: 1.25rem !important;
       }
     }
 
@@ -515,8 +527,11 @@
           gsap.set(".scroll-cue", { opacity: 0, display: "none" });
           return;
         }
-        gsap.set(letters, { yPercent: 108, opacity: 0 });
         gsap.set(statGrid, { y: 36, opacity: 0 });
+        gsap.fromTo(letters,
+          { yPercent: 108, opacity: 0 },
+          { yPercent: 0, opacity: 1, stagger: .035, duration: 0.8, ease: "power2.out", delay: 0.1 }
+        );
         let counted = false;
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -529,31 +544,29 @@
         });
         timeline
           .to(".scroll-cue", { opacity: 0, y: 8, ease: "none" }, 0)
-          .to(letters, { yPercent: 0, opacity: 1, stagger: .06, ease: "none" }, 0)
-          .to(".hero-summary", { y: 0, opacity: 1, ease: "none" }, .32)
-          .to(profileCopy, { y: -28, opacity: 0, ease: "none" }, .5)
-          .to(statGrid, { y: 0, opacity: 1, ease: "none" }, .5)
+          .to(profileCopy, { y: -20, opacity: 0, duration: 0.25, ease: "none" }, .35)
+          .to(statGrid, { y: 0, opacity: 1, duration: 0.3, ease: "none" }, .6)
           .to(".hero-progress-fill", { scaleX: 1, ease: "none" }, 0);
         return () => { timeline.scrollTrigger.kill(); timeline.kill(); };
       }, []);
       return h("section", { className: "hero relative", id: "home", "aria-labelledby": "hero-name" },
-        h("div", { className: "hero-stage sticky top-0 flex items-stretch overflow-hidden px-5 pb-7 pt-20 md:px-10 md:pb-10 md:pt-24" },
-          h("div", { className: "hero-grid relative mx-auto grid w-full max-w-[1500px] grid-rows-[auto_1fr_auto] overflow-hidden border-x border-[color:var(--line)] px-5 py-7 md:px-10 md:py-10" }, [
+        h("div", { className: "hero-stage sticky top-0 flex items-stretch overflow-hidden px-4 pb-5 pt-16 sm:px-6 md:px-10 md:pb-10 md:pt-24" },
+          h("div", { className: "hero-grid relative mx-auto grid w-full max-w-[1500px] min-w-0 grid-rows-[auto_1fr_auto] overflow-hidden border-x border-[color:var(--line)] px-4 py-5 sm:px-6 md:px-10 md:py-10" }, [
             h("div", { className: "layer flex items-center justify-between", key: "top" }, [
               h("p", { className: "mono text-[9px] tracking-[.15em] text-slate-500" }, "SOFTWARE DEVELOPER · BENGALURU")
             ]),
-            h("div", { className: "layer grid items-center gap-10 py-8 lg:grid-cols-[1.2fr_.8fr] lg:gap-20", key: "center" }, [
-              h("div", { key: "name" }, [
-                h("p", { className: "mono mb-5 text-[10px] tracking-[.17em] text-[#315ce8]" }, "WELCOME TO MY CORNER OF THE WEB"),
-                h("h1", { id: "hero-name", className: "text-[clamp(4.3rem,12.5vw,13.5rem)] font-extrabold tracking-[-.075em] overflow-visible pr-6" }, [
+            h("div", { className: "layer grid items-center gap-6 py-4 lg:grid-cols-[1.2fr_.8fr] lg:gap-20", key: "center" }, [
+              h("div", { key: "name", className: "min-w-0" }, [
+                h("p", { className: "mono mb-3 sm:mb-5 text-[9px] sm:text-[10px] tracking-[.17em] text-[#315ce8]" }, "WELCOME TO MY CORNER OF THE WEB"),
+                h("h1", { id: "hero-name", className: "text-[clamp(2.4rem,9.5vw,4.2rem)] sm:text-[clamp(3.8rem,11.5vw,7.5rem)] lg:text-[clamp(5.5rem,12.5vw,13.5rem)] font-extrabold tracking-[-.075em] overflow-visible pr-2 sm:pr-6" }, [
                   h(Name, { text: "RITHESH", key: "first" }),
                   h("span", { className: "text-[#315ce8]" }, h(Name, { text: "K R" }))
                 ]),
-                h("p", { className: "hero-summary mt-8 max-w-xl text-sm leading-7 text-slate-600 md:mt-10 md:text-base" }, "I build dependable software for complicated real-world systems, especially where offline operation, clean architecture, and careful problem solving matter.")
+                h("p", { className: "hero-summary mt-4 sm:mt-8 max-w-xl text-xs sm:text-sm leading-6 sm:leading-7 text-slate-600 md:mt-10 md:text-base" }, "I build dependable software for complicated real-world systems, especially where offline operation, clean architecture, and careful problem solving matter.")
               ]),
               h(ProfileCard, { key: "card" })
             ]),
-            h("div", { className: "layer flex items-end justify-between gap-4", key: "bottom" }, [
+            h("div", { className: "layer flex items-end justify-between gap-4 pt-2", key: "bottom" }, [
               h("button", {
                 onClick: () => window.scrollBy({ top: window.innerHeight * 0.85, behavior: "smooth" }),
                 className: "scroll-cue mono flex items-center gap-3 border-0 bg-transparent p-0 text-[9px] tracking-[.18em] text-slate-400 transition-colors hover:text-[color:var(--blue)] cursor-pointer select-none",
@@ -564,28 +577,126 @@
                 ),
                 h("span", null, "SCROLL")
               ]),
-              h("div", { className: "flex items-center gap-5" }, [
-                h("div", { className: "hero-progress h-[2px] w-16 md:w-32", "aria-hidden": "true" }, h("div", { className: "hero-progress-fill" })),
-                h("button", { onClick: next, className: "slide-arrow mono flex items-center gap-3 px-4 py-3 text-[10px] tracking-[.13em]", "aria-label": "Open About section" }, ["ABOUT", h("span", { className: "text-lg", key: "arrow" }, "→")])
+              h("div", { className: "flex items-center gap-3 sm:gap-5" }, [
+                h("div", { className: "hero-progress h-[2px] w-12 sm:w-20 md:w-32", "aria-hidden": "true" }, h("div", { className: "hero-progress-fill" })),
+                h("button", { onClick: next, className: "slide-arrow mono flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 sm:px-4 sm:py-3 text-[9px] sm:text-[10px] tracking-[.13em] cursor-pointer", "aria-label": "Open About section" }, ["ABOUT", h("span", { className: "text-base sm:text-lg", key: "arrow" }, "→")])
               ])
             ])
           ])
         )
       );
     }
-    function Project({ project }) {
-      return h("article", { className: "work-card snap-start p-7 md:p-9" }, [
-        h("div", { className: "flex items-start justify-between gap-6", key: "top" }, [h("p", { className: "mono text-[10px] tracking-[.15em] opacity-60" }, project.label), h("span", { className: "mono text-xs text-[#315ce8]" }, project.id)]),
-        h("h3", { className: "mt-16 text-4xl font-extrabold tracking-[-.075em] md:text-5xl", key: "name" }, project.name),
-        h("p", { className: "mt-5 text-sm leading-7 opacity-70", key: "description" }, project.description),
-        h("p", { className: "mono mt-10 border-t border-current/15 pt-4 text-[10px] leading-5 opacity-60", key: "stack" }, project.stack)
+    function Project({ project, isActive }) {
+      return h("article", {
+        className: "work-card snap-center md:snap-start shrink-0 w-[84vw] max-w-[22rem] sm:w-[72vw] sm:max-w-[26rem] md:w-auto md:min-w-[31rem] p-5 sm:p-7 md:p-9 flex flex-col justify-between"
+      }, [
+        h("div", { key: "top" }, [
+          h("div", { className: "flex items-start justify-between gap-4" }, [
+            h("p", { className: "mono text-[9px] sm:text-[10px] tracking-[.15em] opacity-60" }, project.label),
+            h("span", { className: "mono text-xs font-semibold text-[#315ce8]" }, project.id)
+          ]),
+          h("h3", { className: "mt-6 sm:mt-10 md:mt-14 text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-[-.075em]" }, project.name),
+          h("p", { className: "mt-3 sm:mt-5 text-xs sm:text-sm leading-6 sm:leading-7 opacity-75" }, project.description)
+        ]),
+        h("p", { className: "mono mt-6 sm:mt-8 md:mt-10 border-t border-current/15 pt-3 sm:pt-4 text-[9px] sm:text-[10px] leading-5 opacity-60", key: "stack" }, project.stack)
       ]);
     }
     function Arrow({ label, next, light }) {
-      return h("button", { onClick: next, className: "slide-arrow " + (light ? "light " : "") + "mono flex items-center gap-3 px-5 py-4 text-[10px] tracking-[.14em]", "aria-label": "Open " + label + " section" }, [label, h("span", { className: "text-lg", key: "arrow" }, "→")]);
+      return h("button", { onClick: next, className: "slide-arrow " + (light ? "light " : "") + "mono flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 sm:px-5 sm:py-4 text-[9px] sm:text-[10px] tracking-[.14em] cursor-pointer", "aria-label": "Open " + label + " section" }, [label, h("span", { className: "text-base sm:text-lg", key: "arrow" }, "→")]);
     }
     function BackArrow({ label, onClick, light }) {
-      return h("button", { onClick: onClick, className: "slide-back " + (light ? "light " : "") + "mono flex items-center gap-3 px-5 py-4 text-[10px] tracking-[.14em]", "aria-label": "Back to " + label + " section" }, [h("span", { className: "text-lg", key: "arrow" }, "←"), label]);
+      return h("button", { onClick: onClick, className: "slide-back " + (light ? "light " : "") + "mono flex items-center gap-2 sm:gap-3 px-3.5 py-2.5 sm:px-5 sm:py-4 text-[9px] sm:text-[10px] tracking-[.14em] cursor-pointer", "aria-label": "Back to " + label + " section" }, [h("span", { className: "text-base sm:text-lg", key: "arrow" }, "←"), label]);
+    }
+    function WorkSection() {
+      const [current, setCurrent] = useState(0);
+      const railRef = useRef(null);
+      const isManual = useRef(false);
+
+      const scrollToProject = index => {
+        if (!railRef.current) return;
+        const container = railRef.current;
+        const cards = container.querySelectorAll(".work-card");
+        if (cards[index]) {
+          isManual.current = true;
+          cards[index].scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+          setCurrent(index);
+          setTimeout(() => { isManual.current = false; }, 500);
+        }
+      };
+
+      const handleScroll = () => {
+        if (isManual.current || !railRef.current) return;
+        const container = railRef.current;
+        const cards = container.querySelectorAll(".work-card");
+        if (!cards.length) return;
+        const containerCenter = container.scrollLeft + container.clientWidth / 2;
+        let closestIdx = 0;
+        let minDiff = Infinity;
+        cards.forEach((card, idx) => {
+          const cardCenter = card.offsetLeft + card.clientWidth / 2;
+          const diff = Math.abs(containerCenter - cardCenter);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closestIdx = idx;
+          }
+        });
+        if (closestIdx !== current) {
+          setCurrent(closestIdx);
+        }
+      };
+
+      return h("div", { className: "flex flex-col justify-center h-full w-full min-w-0 py-2 sm:py-6" }, [
+        h("div", { className: "flex flex-col sm:flex-row sm:items-end justify-between gap-3", key: "header" }, [
+          h("div", null, [
+            h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#315ce8]" }, "SELECTED WORK"),
+            h("p", { className: "mt-1.5 sm:mt-3 max-w-md text-xs sm:text-sm leading-5 sm:leading-7 text-slate-600" }, "A selection of projects where I tackled real engineering problems — offline systems, desktop tooling, and low-level utilities.")
+          ]),
+          h("div", { className: "flex items-center gap-1.5 self-start sm:self-auto shrink-0 mono text-[9px] tracking-[.12em]" }, projects.map((p, i) =>
+            h("button", {
+              key: p.id,
+              onClick: () => scrollToProject(i),
+              className: "project-tab px-2.5 py-1 rounded border transition-all cursor-pointer " + (current === i ? "bg-[#315ce8] text-white border-[#315ce8] font-semibold" : "border-slate-300 text-slate-600 hover:border-slate-400 bg-white/70"),
+              "aria-label": "View " + p.name
+            }, [
+              h("span", { className: "opacity-70 mr-1" }, p.id),
+              h("span", { className: "hidden xs:inline sm:inline" }, p.name)
+            ])
+          ))
+        ]),
+        h("div", {
+          ref: railRef,
+          onScroll: handleScroll,
+          className: "work-rail -mx-4 sm:-mx-6 md:-mx-10 mt-4 sm:mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 sm:px-6 md:px-10 pb-4 pt-1",
+          key: "rail"
+        }, projects.map((project, idx) => h(Project, { project, key: project.id, isActive: current === idx }))),
+        h("div", { className: "flex items-center justify-between mt-2 pt-1 mono text-[9px] text-slate-500", key: "controls" }, [
+          h("div", { className: "flex items-center gap-2" }, [
+            h("span", { className: "tracking-[.15em] font-medium text-[#18222f]" }, "0" + (current + 1) + " / 0" + projects.length),
+            h("div", { className: "flex gap-1 items-center ml-2" }, projects.map((_, i) =>
+              h("button", {
+                key: i,
+                onClick: () => scrollToProject(i),
+                className: "h-1.5 rounded-full transition-all cursor-pointer " + (current === i ? "w-5 bg-[#315ce8]" : "w-1.5 bg-slate-300 hover:bg-slate-400"),
+                "aria-label": "Go to slide " + (i + 1)
+              })
+            ))
+          ]),
+          h("div", { className: "flex items-center gap-2" }, [
+            h("button", {
+              disabled: current === 0,
+              onClick: () => scrollToProject(Math.max(0, current - 1)),
+              className: "mono px-2 py-1 border border-slate-300 rounded text-[9px] transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-100",
+              "aria-label": "Previous project"
+            }, "← PREV"),
+            h("button", {
+              disabled: current === projects.length - 1,
+              onClick: () => scrollToProject(Math.min(projects.length - 1, current + 1)),
+              className: "mono px-2 py-1 border border-slate-300 rounded text-[9px] transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed hover:bg-slate-100",
+              "aria-label": "Next project"
+            }, "NEXT →")
+          ])
+        ])
+      ]);
     }
     function MathArtifact() {
       const canvasRef = useRef(null);
@@ -870,45 +981,59 @@
 
     function DeckSlide({ index, next, goTo }) {
       const body = index === 1
-        ? h("div", { className: "grid h-full items-center gap-12 lg:grid-cols-[minmax(0,29rem)_1fr] lg:gap-16 xl:gap-24" }, [
-          h("div", { className: "flex flex-col items-start gap-4 w-full max-w-[28.5rem]" }, [
+        ? h("div", { className: "grid h-full items-center gap-6 lg:grid-cols-[minmax(0,25rem)_1fr] lg:gap-14 xl:gap-20 overflow-y-auto lg:overflow-visible py-2" }, [
+          h("div", { className: "flex flex-col items-start gap-3 w-full max-w-[20rem] sm:max-w-[24rem] lg:max-w-[28.5rem] mx-auto lg:mx-0" }, [
             h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#315ce8]" }, "ABOUT"),
             h(MathArtifact, { key: "math-visualizer" })
           ]),
-          h("div", null, [
-            h("h2", { className: "max-w-4xl text-5xl font-extrabold leading-[.92] tracking-[-.08em] md:text-8xl" }, "Building from constraints, not around them."),
-            h("div", { className: "mt-12 grid max-w-4xl gap-6 text-sm leading-7 text-slate-600 md:grid-cols-2" }, [
+          h("div", { className: "min-w-0" }, [
+            h("h2", { className: "max-w-4xl text-3xl sm:text-5xl lg:text-7xl xl:text-8xl font-extrabold leading-[.94] tracking-[-.08em]" }, "Building from constraints, not around them."),
+            h("div", { className: "mt-6 sm:mt-10 lg:mt-12 grid max-w-4xl gap-4 sm:gap-6 text-xs sm:text-sm leading-6 sm:leading-7 text-slate-600 md:grid-cols-2" }, [
               h("p", null, "I'm a BSc Computer Science & Statistics student at CHRIST (Deemed to be University), Bengaluru. My focus is software development, backend work, systems programming, and computational problem solving. I care deeply about writing code that is readable, testable, and built to last not just code that works today."),
               h("p", null, "I like software that remains useful without the perfect conditions: an unavailable network, a failed compiler run, an interrupted process, or data that needs to evolve without breaking what came before. My work reflects a preference for careful architecture, minimal dependencies, and systems that degrade gracefully rather than fail silently.")
             ])
           ])
         ])
         : index === 2
-          ? h("div", { className: "flex flex-col justify-center h-full py-6" }, [
-            h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#315ce8]" }, "SELECTED WORK"),
-            h("p", { className: "mt-3 max-w-md text-sm leading-7 text-slate-600" }, "A selection of projects where I tackled real engineering problems — offline systems, desktop tooling, and low-level utilities."),
-            h("div", { className: "work-rail -mx-5 mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 md:-mx-10 md:px-10" }, projects.map(project => h(Project, { project, key: project.id })))
-          ])
-          : h("div", { className: "grid h-full items-center gap-12 text-[#f6f2ea] md:grid-cols-[1fr_auto]" }, [
-            h("div", null, [h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#f3a38d]" }, "LET'S TALK"), h("h2", { className: "mt-5 max-w-4xl text-6xl font-extrabold leading-[.83] tracking-[-.09em] md:text-9xl" }, "Make the hard part work.")]),
-            h("div", { className: "md:text-right" }, [h("a", { href: "mailto:rithesh.kr@bsccsh.christuniversity.in", className: "contact-link mono text-sm" }, "rithesh.kr@bsccsh.christuniversity.in"), h("a", { href: "https://github.com/Rithesh077", target: "_blank", rel: "noopener noreferrer", className: "contact-link mono text-sm block mt-4" }, "github.com/Rithesh077"), h("p", { className: "mono mt-6 text-[10px] tracking-[.1em] text-slate-400" }, "BENGALURU, KARNATAKA · +91 93534 57675")])
+          ? h(WorkSection, { key: "work-section" })
+          : h("div", { className: "grid h-full items-center gap-8 text-[#f6f2ea] md:grid-cols-[1fr_auto] py-2" }, [
+            h("div", null, [
+              h("p", { className: "section-kicker mono text-[10px] tracking-[.15em] text-[#f3a38d]" }, "LET'S TALK"),
+              h("h2", { className: "mt-4 max-w-4xl text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-extrabold leading-[.86] tracking-[-.09em]" }, "Make the hard part work.")
+            ]),
+            h("div", { className: "md:text-right" }, [
+              h("a", { href: "mailto:rithesh.kr@bsccsh.christuniversity.in", className: "contact-link mono text-xs sm:text-sm break-all sm:break-normal inline-block" }, "rithesh.kr@bsccsh.christuniversity.in"),
+              h("a", { href: "https://github.com/Rithesh077", target: "_blank", rel: "noopener noreferrer", className: "contact-link mono text-xs sm:text-sm block mt-3 sm:mt-4" }, "github.com/Rithesh077"),
+              h("p", { className: "mono mt-4 sm:mt-6 text-[9px] sm:text-[10px] tracking-[.1em] text-slate-400" }, "BENGALURU, KARNATAKA · +91 93534 57675")
+            ])
           ]);
       const contact = index === 3;
       return h("section", { className: "slide " + (contact ? "bg-[#18222f]" : "bg-[#f6f2ea]"), id: slides[index].toLowerCase(), "aria-label": slides[index] + " section" },
-        h("div", { className: "slide-grid relative flex min-h-[100svh] px-5 pb-8 pt-20 md:px-10 md:pb-10 md:pt-24" },
-          h("div", { className: "slide-layer mx-auto grid w-full max-w-[1500px] grid-rows-[auto_1fr_auto] px-5 py-7 md:px-10 md:py-10" }, [
+        h("div", { className: "slide-grid relative flex min-h-[100svh] px-4 pb-6 pt-16 sm:px-6 sm:pb-8 sm:pt-20 md:px-10 md:pb-10 md:pt-24" },
+          h("div", { className: "slide-layer mx-auto grid w-full max-w-[1500px] min-w-0 grid-rows-[auto_1fr_auto] px-3 py-4 sm:px-6 sm:py-6 md:px-10 md:py-10" }, [
             h("div", { key: "top" }),
-            h("div", { className: "min-h-0", key: "body" }, body),
-            h("div", { className: "flex items-center justify-between", key: "bottom" }, [h(BackArrow, { label: slides[index - 1], onClick: function () { goTo(index - 1) }, light: contact }), h(Arrow, { label: index === 3 ? "HOME" : slides[index + 1], next, light: contact })])
+            h("div", { className: "min-h-0 min-w-0 w-full overflow-hidden", key: "body" }, body),
+            h("div", { className: "flex items-center justify-between w-full pt-3", key: "bottom" }, [
+              h(BackArrow, { label: slides[index - 1], onClick: function () { goTo(index - 1) }, light: contact }),
+              h(Arrow, { label: index === 3 ? "HOME" : slides[index + 1], next, light: contact })
+            ])
           ])
         )
       );
     }
     function Nav({ active, goTo }) {
-      return h("header", { className: "site-nav fixed inset-x-0 top-0 z-50" }, h("nav", { className: "mx-auto flex max-w-[1500px] items-center justify-between gap-4 px-5 py-3 md:px-10", "aria-label": "Portfolio slides" }, [
-        h("button", { onClick: () => goTo(0), className: "mono shrink-0 border-0 bg-transparent text-xs font-medium tracking-[.13em]" }, "R / KR"),
-        h("div", { className: "flex max-w-[82vw] items-center gap-1 overflow-x-auto" }, slides.map((label, index) => h("button", { onClick: () => goTo(index), className: "nav-button " + (active === index ? "active " : "") + "mono shrink-0 rounded-full px-3 py-2 text-[9px] tracking-[.12em]", key: label }, label)))
-      ]));
+      return h("header", { className: "site-nav fixed inset-x-0 top-0 z-50" },
+        h("nav", { className: "mx-auto flex max-w-[1500px] items-center justify-between gap-2 px-4 py-2.5 sm:px-6 sm:py-3 md:px-10", "aria-label": "Portfolio slides" }, [
+          h("button", { onClick: () => goTo(0), className: "mono shrink-0 border-0 bg-transparent text-xs font-semibold tracking-[.13em] cursor-pointer" }, "R / KR"),
+          h("div", { className: "flex max-w-[85vw] items-center gap-1 overflow-x-auto py-0.5" }, slides.map((label, index) =>
+            h("button", {
+              onClick: () => goTo(index),
+              className: "nav-button " + (active === index ? "active " : "") + "mono shrink-0 rounded-full px-2.5 py-1.5 sm:px-3 sm:py-2 text-[8.5px] sm:text-[9px] tracking-[.12em] cursor-pointer",
+              key: label
+            }, label)
+          ))
+        ])
+      );
     }
     function App() {
       const [active, setActive] = useState(0);
